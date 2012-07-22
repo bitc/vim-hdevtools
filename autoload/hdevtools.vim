@@ -36,7 +36,7 @@ function! s:hdevtools_type.highlight(group)
 endfunction
 
 function! s:highlight_group()
-  return get(g:, 'hdevtools_type_highlight', 'Search')
+  return get(g:, 'hdevtools_type_highlight', 'Visual')
 endfunction
 
 function! s:on_enter()
