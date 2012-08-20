@@ -1,3 +1,32 @@
+function! hdevtools#CompleteHaskell(findstart, base)
+  if a:findstart
+
+    " locate the start of the word
+    let line = getline('.')
+    let start = col('.') - 1
+    while start > 0 && line[start - 1] =~ '\w\|\.'
+      let start -= 1
+    endwhile
+    return start
+
+  else
+
+    let l:cmd = hdevtools#build_command('modules', '')
+    let l:output = system(l:cmd)
+    let l:lines = split(l:output, '\n')
+
+    let l:result = []
+    for l:m in l:lines
+      let [l:module, l:package] = split(l:m)
+      if l:module =~ '^' . a:base
+        call add(l:result, { 'word': l:module, 'menu': l:package })
+      endif
+    endfor
+    return l:result
+
+  endif
+endfun
+
 let s:hdevtools_info_buffer = -1
 
 function! hdevtools#info(identifier)
