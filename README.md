@@ -31,7 +31,7 @@ Installation
    is the recommended way:
 
         cd ~/.vim/bundle
-        git clone https://github.com/bitc/hdevtools.git
+        git clone https://github.com/bitc/vim-hdevtools.git
 
 3. Configure your keybindings in your `.vimrc` file. I recommend something
    like:
