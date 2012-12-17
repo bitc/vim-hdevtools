@@ -475,7 +475,9 @@ function! hdevtools#type()
   let l:types = []
   for l:line in split(l:output, '\n')
     let l:m = matchlist(l:line, '\(\d\+\) \(\d\+\) \(\d\+\) \(\d\+\) "\([^"]\+\)"')
-    call add(l:types, [l:m[1 : 4], l:m[5]])
+    if len(l:m) != 0
+      call add(l:types, [l:m[1 : 4], l:m[5]])
+    endif
   endfor
 
   call hdevtools#clear_highlight()
