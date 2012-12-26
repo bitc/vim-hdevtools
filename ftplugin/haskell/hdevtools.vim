@@ -36,3 +36,24 @@ let b:undo_ftplugin .= join(map([
       \ 'HdevtoolsInfo'
       \ ], '"delcommand " . v:val'), ' | ')
 let b:undo_ftplugin .= ' | unlet b:did_ftplugin_hdevtools'
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+" Functions
+" 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+fun! DeleteSocketFile()
+    if fileisreadable(".hdevtools.sock")
+        system("rm .hdevtools.sock")
+    endif
+endfun
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+" Autocommands
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+au VimEnter :call DeleteSocketFile()
+au VimLeave :call DeleteSocketFile()
