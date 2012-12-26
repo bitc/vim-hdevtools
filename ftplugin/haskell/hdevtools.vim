@@ -18,6 +18,8 @@ if !s:has_hdevtools
   finish
 endif
 
+call hdevtools#prepare_shutdown()
+
 if exists('b:undo_ftplugin')
   let b:undo_ftplugin .= ' | '
 else

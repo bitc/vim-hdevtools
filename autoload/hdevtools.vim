@@ -1,5 +1,29 @@
 let s:hdevtools_info_buffer = -1
 
+function! s:shutdown()
+  let l:cmd = hdevtools#build_command('admin', '--stop-server')
+  " Must save the output in order for the command to actually run:
+  let l:dummy = system(l:cmd)
+endfunction
+
+function! hdevtools#prepare_shutdown()
+  let l:cmd = hdevtools#build_command('admin', '--status')
+  " Must save the output in order for the command to actually run:
+  let l:dummy = system(l:cmd)
+
+  " Only shutdown the hdevtools server on Vim quit if the above 'status'
+  " command indicated that the hdevtools server isn't currently running: This
+  " plugin will start the server, so this plugin should be responsible for
+  " shutting it down when Vim exits.
+  "
+  " If on the other hand, the hdevtools server is already running, then we
+  " shouldn't shut it down on Vim exit, since someone else started it, so it's
+  " their problem.
+  if v:shell_error != 0
+    autocmd VimLeave * call s:shutdown()
+  endif
+endfunction
+
 function! hdevtools#info(identifier)
   let l:identifier = a:identifier
 
