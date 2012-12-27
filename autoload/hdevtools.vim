@@ -1,13 +1,13 @@
 let s:hdevtools_info_buffer = -1
 
 function! s:shutdown()
-  let l:cmd = hdevtools#build_command('admin', '--stop-server')
+  let l:cmd = hdevtools#build_command_bare('admin', '--stop-server')
   " Must save the output in order for the command to actually run:
   let l:dummy = system(l:cmd)
 endfunction
 
 function! hdevtools#prepare_shutdown()
-  let l:cmd = hdevtools#build_command('admin', '--status')
+  let l:cmd = hdevtools#build_command_bare('admin', '--status')
   " Must save the output in order for the command to actually run:
   let l:dummy = system(l:cmd)
 
@@ -458,6 +458,14 @@ function! hdevtools#build_command(command, args)
   let l:cmd = l:cmd . ' ' . a:command . ' '
 
   let l:cmd = l:cmd . get(g:, 'hdevtools_options', '') . ' '
+  let l:cmd = l:cmd . a:args
+  return l:cmd
+endfunction
+
+" Does not include g:hdevtools_options
+function! hdevtools#build_command_bare(command, args)
+  let l:cmd = 'hdevtools'
+  let l:cmd = l:cmd . ' ' . a:command . ' '
   let l:cmd = l:cmd . a:args
   return l:cmd
 endfunction
