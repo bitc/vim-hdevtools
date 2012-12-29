@@ -24,6 +24,29 @@ function! hdevtools#prepare_shutdown()
   endif
 endfunction
 
+function! hdevtools#go_file(opencmd)
+  " Get the import declaration under the cursor
+  let l:module_name = matchstr(getline("."), '^import\s\+\(qualified\s\+\)\=\zs\(\w\|\.\)\+\ze')
+  if l:module_name ==# ''
+    call hdevtools#print_warning("Cursor not on a Haskell import declaration")
+    return
+  endif
+
+  let l:cmd = hdevtools#build_command('modulefile', shellescape(l:module_name))
+  let l:output = system(l:cmd)
+
+  let l:lines = split(l:output, '\n')
+
+  if v:shell_error != 0
+    for l:line in l:lines
+      call hdevtools#print_error(l:line)
+    endfor
+    return
+  endif
+
+  exe a:opencmd fnameescape(l:lines[0])
+endfunction
+
 function! hdevtools#info(identifier)
   let l:identifier = a:identifier
 
