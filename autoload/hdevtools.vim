@@ -51,8 +51,10 @@ function! hdevtools#info(identifier)
     call hdevtools#print_warning("current version of hdevtools.vim doesn't support running on an unnamed buffer.")
     return
   endif
+  redraw | echo 'hdevtools working...'
   let l:cmd = hdevtools#build_command('info', shellescape(l:file) . ' -- ' . shellescape(l:identifier))
   let l:output = system(l:cmd)
+  redraw | echo '' | redraw
 
   let l:lines = split(l:output, '\n')
 
@@ -494,8 +496,10 @@ function! hdevtools#type()
     call hdevtools#print_warning("current version of hdevtools.vim doesn't support running on an unnamed buffer.")
     return ['', '']
   endif
+  redraw | echo 'hdevtools working...'
   let l:cmd = hdevtools#build_command('type', shellescape(l:file) . ' ' . l:line . ' ' . l:col)
   let l:output = system(l:cmd)
+  redraw
 
   if v:shell_error != 0
     for l:line in split(l:output, '\n')
