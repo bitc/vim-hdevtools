@@ -24,6 +24,26 @@ function! hdevtools#prepare_shutdown()
   endif
 endfunction
 
+function! hdevtools#set_ghc_option(options)
+  if type(a:options) == type("")
+    let l:opts = split(a:options)
+  elseif type(a:options) == type([])
+    let l:opts = a:options
+  else
+    echoerr "Argument must be a string or list"
+    return
+  endif
+
+  if !exists('g:hdevtools_options')
+    let g:hdevtools_options = ''
+  endif
+
+  for l:opt in l:opts
+    let g:hdevtools_options .= ' -g '
+    let g:hdevtools_options .= shellescape(l:opt)
+  endfor
+endfunction
+
 function! hdevtools#info(identifier)
   let l:identifier = a:identifier
 
