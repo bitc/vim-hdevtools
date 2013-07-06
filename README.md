@@ -27,11 +27,16 @@ Installation
 
         $ cabal install hdevtools
 
+   Make sure `hdevtools` is in `PATH`:
+
+        $ which hdevtools
+        /home/user/.cabal/bin/hdevtools
+
 2. Install this plugin. [pathogen.vim](<https://github.com/tpope/vim-pathogen/>)
    is the recommended way:
 
-        cd ~/.vim/bundle
-        git clone https://github.com/bitc/vim-hdevtools.git
+        $ cd ~/.vim/bundle
+        $ git clone https://github.com/bitc/vim-hdevtools.git
 
 3. Configure your keybindings in your `.vimrc` file. I recommend something
    like:
