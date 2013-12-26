@@ -120,6 +120,36 @@ function! hdevtools#info(identifier)
   highlight link HdevtoolsInfoLink Underlined
 endfunction
 
+function! hdevtools#findsymbol(identifier)
+  let l:identifier = a:identifier
+
+  " No identifier argument given, probably called from a keyboard shortcut
+  if l:identifier ==# ''
+    " Get the identifier under the cursor
+    let l:identifier = s:extract_identifier(getline("."), col("."))
+  endif
+
+  if l:identifier ==# ''
+    echo '-- No Identifier Under Cursor'
+    return []
+  endif
+
+  let l:cmd = hdevtools#build_command('findsymbol', shellescape(l:identifier))
+  let l:output = system(l:cmd)
+  let l:lines = split(l:output, '\n')
+
+  " Check if the call to hdevtools info succeeded
+  if v:shell_error != 0
+    for l:line in l:lines
+      call hdevtools#print_error(l:line)
+    endfor
+  else
+    return l:lines
+  endif
+
+  return []
+endfunction
+
 function! s:extract_identifier(line_text, col)
   if a:col > len(a:line_text)
     return ''
