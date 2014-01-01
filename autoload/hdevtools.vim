@@ -134,7 +134,13 @@ function! hdevtools#findsymbol(identifier)
     return []
   endif
 
-  let l:cmd = hdevtools#build_command('findsymbol', shellescape(l:identifier))
+  let l:file = expand('%')
+  if l:file ==# ''
+    call hdevtools#print_warning("current version of hdevtools.vim doesn't support running on an unnamed buffer.")
+    return
+  endif
+
+  let l:cmd = hdevtools#build_command('findsymbol', shellescape(l:identifier) . ' ' . shellescape(l:file))
   let l:output = system(l:cmd)
   let l:lines = split(l:output, '\n')
 
