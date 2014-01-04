@@ -134,13 +134,33 @@ function! hdevtools#findsymbol(identifier)
     return []
   endif
 
-  let l:file = expand('%')
-  if l:file ==# ''
-    call hdevtools#print_warning("current version of hdevtools.vim doesn't support running on an unnamed buffer.")
-    return
+  let l:escapedIdent = shellescape(l:identifier)
+  let l:srcFiles = []
+  if exists('g:hdevtools_src_dir')
+     " only consider the source files that contain the identifier in the export list, currently
+     " only export lists are supported that look something like:
+     "
+     " module Blub
+     "    ( identifier1
+     "    , identifier2
+     "    ) where
+     "
+     let l:regex  = "'^ *[(,].*" . l:escapedIdent . ".*$'"
+     let l:grpcmd = 'grep --exclude=.hdevtools.sock -Rl -e ' . l:regex . ' ' . g:hdevtools_src_dir
+     let l:grepOutput = system(l:grpcmd)
+     let l:srcFiles   = split(l:grepOutput, '\n')
   endif
 
-  let l:cmd = hdevtools#build_command('findsymbol', shellescape(l:identifier) . ' ' . shellescape(l:file))
+  let l:srcParam = ''
+  let l:curFile  = fnamemodify(expand('%'), ':p')
+  for l:srcFile in l:srcFiles
+     let l:absSrcFile = fnamemodify(l:srcFile, ':p')
+     if l:absSrcFile !=# l:curFile
+        let l:srcParam .= ' ' . shellescape(l:absSrcFile)
+     endif
+  endfor
+
+  let l:cmd = hdevtools#build_command('findsymbol', l:escapedIdent . ' ' . l:srcParam)
   let l:output = system(l:cmd)
   let l:lines = split(l:output, '\n')
 
