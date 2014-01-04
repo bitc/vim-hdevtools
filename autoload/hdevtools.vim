@@ -517,6 +517,10 @@ function! hdevtools#build_command(command, args)
   let l:cmd = l:cmd . ' ' . a:command . ' '
 
   let l:cmd = l:cmd . get(g:, 'hdevtools_options', '') . ' '
+  if exists('g:hdevtools_src_dir')
+     let l:cmd .= ' -g-i' . g:hdevtools_src_dir . ' '
+  endif
+
   let l:cmd = l:cmd . a:args
   return l:cmd
 endfunction
