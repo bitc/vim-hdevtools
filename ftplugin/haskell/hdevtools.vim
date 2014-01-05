@@ -32,7 +32,7 @@ nnoremap <buffer> <silent> <C-W><C-F> :call hdevtools#go_file("sp")<CR>
 command! -buffer -nargs=0 HdevtoolsType echo hdevtools#type()[1]
 command! -buffer -nargs=0 HdevtoolsClear call hdevtools#type_clear()
 command! -buffer -nargs=? HdevtoolsInfo call hdevtools#info(<q-args>)
-command! -buffer -nargs=? HdevtoolsFindsymbol call hdevtools#findsymbol(<q-args>)
+command! -buffer -nargs=1 HdevtoolsFindsymbol call hdevtools#findsymbol(<q-args>, [])
 
 let b:undo_ftplugin .= join(map([
       \ 'HdevtoolsType',

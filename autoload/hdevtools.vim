@@ -120,7 +120,7 @@ function! hdevtools#info(identifier)
   highlight link HdevtoolsInfoLink Underlined
 endfunction
 
-function! hdevtools#findsymbol(identifier)
+function! hdevtools#findsymbol(identifier, srcFiles)
   let l:identifier = a:identifier
 
   " No identifier argument given, probably called from a keyboard shortcut
@@ -134,33 +134,12 @@ function! hdevtools#findsymbol(identifier)
     return []
   endif
 
-  let l:escapedIdent = shellescape(l:identifier)
-  let l:srcFiles = []
-  if exists('g:hdevtools_src_dir')
-     " only consider the source files that contain the identifier in the export list, currently
-     " only export lists are supported that look something like:
-     "
-     " module Blub
-     "    ( identifier1
-     "    , identifier2
-     "    ) where
-     "
-     let l:regex  = "'^ *[(,].*" . l:escapedIdent . ".*$'"
-     let l:grpcmd = 'grep --exclude=.hdevtools.sock -Rl -e ' . l:regex . ' ' . g:hdevtools_src_dir
-     let l:grepOutput = system(l:grpcmd)
-     let l:srcFiles   = split(l:grepOutput, '\n')
-  endif
-
   let l:srcParam = ''
-  let l:curFile  = fnamemodify(expand('%'), ':p')
-  for l:srcFile in l:srcFiles
-     let l:absSrcFile = fnamemodify(l:srcFile, ':p')
-     if l:absSrcFile !=# l:curFile
-        let l:srcParam .= ' ' . shellescape(l:absSrcFile)
-     endif
+  for l:srcFile in a:srcFiles
+     let l:srcParam .= ' ' . shellescape(l:srcFile)
   endfor
 
-  let l:cmd = hdevtools#build_command('findsymbol', l:escapedIdent . ' ' . l:srcParam)
+  let l:cmd = hdevtools#build_command('findsymbol', shellescape(l:identifier) . ' ' . l:srcParam)
   let l:output = system(l:cmd)
   let l:lines = split(l:output, '\n')
 
