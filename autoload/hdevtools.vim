@@ -69,7 +69,7 @@ function! hdevtools#info(identifier)
     return
   endif
 
-  let l:file = expand('%')
+  let l:file = expand('%:p')
   if l:file ==# ''
     call hdevtools#print_warning("current version of hdevtools.vim doesn't support running on an unnamed buffer.")
     return
@@ -512,7 +512,7 @@ function! hdevtools#type()
     return b:hdevtools_type.type()
   endif
 
-  let l:file = expand('%')
+  let l:file = expand('%:p')
   if l:file ==# ''
     call hdevtools#print_warning("current version of hdevtools.vim doesn't support running on an unnamed buffer.")
     return ['', '']
