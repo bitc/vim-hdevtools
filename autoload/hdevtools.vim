@@ -512,16 +512,15 @@ function! s:on_leave()
 endfunction
 
 function! hdevtools#build_command(command, args)
-  let l:cmd  = 'hdevtools'
-  let l:cmd .= ' ' . a:command
-  let l:cmd .= ' ' . hdevtools#options()
+  let l:cmd = 'hdevtools'
+  let l:cmd = l:cmd . ' ' . a:command . ' '
 
-  let l:srcDir = hdevtools#src_dir()
-  if l:srcDir !=# ''
-    let l:cmd .= ' -g-i' . l:srcDir
+  let l:cmd = l:cmd . get(g:, 'hdevtools_options', '') . ' '
+  if exists('g:hdevtools_src_dir')
+     let l:cmd .= ' -g-i' . g:hdevtools_src_dir . ' '
   endif
 
-  let l:cmd .= ' ' . a:args
+  let l:cmd = l:cmd . a:args
   return l:cmd
 endfunction
 
@@ -596,24 +595,6 @@ function! hdevtools#type()
   augroup END
 
   return l:ret
-endfunction
-
-function! hdevtools#options()
-  return s:get_buffer_or_global_var('hdevtools_options', '')
-endfunction
-
-function! hdevtools#src_dir()
-  return s:get_buffer_or_global_var('hdevtools_src_dir', '')
-endfunction
-
-function! s:get_buffer_or_global_var(varName, defaultValue)
-  let l:var = a:defaultValue
-  if exists('b:' . a:varName)
-    let l:var = get(b:, a:varName, '')
-  elseif exists('g:' . a:varName)
-    let l:var = get(g:, a:varName, '')
-  endif
-  return l:var
 endfunction
 
 function! hdevtools#type_clear()
