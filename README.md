@@ -1,7 +1,7 @@
 hdevtools Vim Plugin
 ====================
 
-Vim plugin for Haskell development powered by the lightnight fast
+Vim plugin for Haskell development powered by the lightning fast
 [hdevtools](<https://github.com/bitc/hdevtools/>) background server.
 
 
