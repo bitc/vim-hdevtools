@@ -477,9 +477,7 @@ function! s:on_leave()
 endfunction
 
 function! hdevtools#build_command(command, args)
-  let l:cmd = 'hdevtools'
-  let l:cmd = l:cmd . ' ' . a:command . ' '
-
+  let l:cmd = g:hdevtools_exe . ' ' . a:command . ' '
   let l:cmd = l:cmd . get(g:, 'hdevtools_options', '') . ' '
   let l:cmd = l:cmd . a:args
   return l:cmd
@@ -487,8 +485,7 @@ endfunction
 
 " Does not include g:hdevtools_options
 function! hdevtools#build_command_bare(command, args)
-  let l:cmd = 'hdevtools'
-  let l:cmd = l:cmd . ' ' . a:command . ' '
+  let l:cmd = g:hdevtools_exe . ' ' . a:command . ' '
   let l:cmd = l:cmd . a:args
   return l:cmd
 endfunction

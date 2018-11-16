@@ -19,21 +19,55 @@ editor.
 This is the Vim plugin that integrates Vim with hdevtools.
 
 
+Requirements
+------------
+
+The *vim-hdevtools* plugin requires a way to run `hdevtools`. Here are the
+ways to make `hdevtools` available to the plugin.
+
+### Global `hdevtools`
+
+Install the `hdevtools` command line program so that it is on your
+executable `$PATH`.
+
+Get it from Github: <https://github.com/hdevtools/hdevtools/>
+
+Or from Hackage:
+
+    $ cabal install hdevtools
+
+Or from Stackage:
+
+    $ stack install hdevtools
+
+Note that `hdevtools` must be built with the same version of GHC as the
+project which you will be editing.
+
+### Local `hdevtools` with `stack`
+
+If your project is built with [stack](<https://www.haskellstack.org>) and
+if you run Vim from the directory that contains `stack.yaml`, then
+the *vim-hdevtools* plugin can employ `stack` to automatically install
+`hdevtools` built with the same version of GHC indicated by the resolver
+in your `stack.yaml`. This will not conflict with any other installations
+of `hdevtools` on your system.
+
+If you want the *vim-hdevtools* plugin to use `stack`,
+you have to enable this feature in your `.vimrc` like so:
+
+    let g:hdevtools_stack = 1
+
+
 Installation
 ------------
 
-1. You must install the `hdevtools` command line program, It can be found
-   here: <https://github.com/hdevtools/hdevtools/>, or from Hackage:
-
-        $ cabal install hdevtools
-
-2. Install this plugin. [pathogen.vim](<https://github.com/tpope/vim-pathogen/>)
+1. Install this plugin. [pathogen.vim](<https://github.com/tpope/vim-pathogen/>)
    is the recommended way:
 
         cd ~/.vim/bundle
         git clone https://github.com/bitc/vim-hdevtools.git
 
-3. Configure your keybindings in your `.vimrc` file. I recommend something
+2. Configure your keybindings in your `.vimrc` file. I recommend something
    like:
 
         au FileType haskell nnoremap <buffer> <F1> :HdevtoolsType<CR>
