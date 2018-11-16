@@ -2,13 +2,13 @@ hdevtools Vim Plugin
 ====================
 
 Vim plugin for Haskell development powered by the lightning fast
-[hdevtools](<https://github.com/bitc/hdevtools/>) background server.
+[hdevtools](<https://github.com/hdevtools/hdevtools/>) background server.
 
 
 About
 -----
 
-[hdevtools](<https://github.com/bitc/hdevtools/>) is a command line program
+[hdevtools](<https://github.com/hdevtools/hdevtools/>) is a command line program
 powered by the GHC API, that provides services for Haskell development.
 hdevtools works by running a persistent process in the background, so that your
 Haskell modules remain in memory, instead of having to reload everything each
@@ -23,7 +23,7 @@ Installation
 ------------
 
 1. You must install the `hdevtools` command line program, It can be found
-   here: <https://github.com/bitc/hdevtools/>, or from Hackage:
+   here: <https://github.com/hdevtools/hdevtools/>, or from Hackage:
 
         $ cabal install hdevtools
 
