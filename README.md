@@ -37,7 +37,8 @@ Installation
    like:
 
         au FileType haskell nnoremap <buffer> <F1> :HdevtoolsType<CR>
-        au FileType haskell nnoremap <buffer> <silent> <F2> :HdevtoolsClear<CR>
+        au FileType haskell nnoremap <buffer> <silent> <F2> :HdevtoolsInfo<CR>
+        au FileType haskell nnoremap <buffer> <silent> <F3> :HdevtoolsClear<CR>
 
 
 Features
@@ -60,6 +61,9 @@ Position the cursor anywhere in a Haskell source file, and execute
 The type for the expression under the cursor will be printed, and the
 expression will be highlighted. Repeated presses will expand the expression
 that is examined.
+
+To get information from GHC about the identifier under cursor,
+execute `HdevtoolsInfo` (or press the `<F2>` key as configured above).
 
 You can execute `HdevtoolsClear` to get rid of the highlighting.
 
