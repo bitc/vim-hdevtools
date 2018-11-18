@@ -79,6 +79,12 @@ appropriate (such as your project's `Session.vim`):
 Make sure that each GHC option has its own `-g` prefix (don't group multiple
 options like this: `"-g-isrc\ -Wall"`)
 
+I recommend setting the flag to
+[defer GHC type errors to runtime](<https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#deferring-type-errors-to-runtime>),
+so that Haskell expressions can be typechecked even if type errors
+elsewhere in the project would otherwise prevent GHC from compiling.
+
+    let g:hdevtools_options = '-g-fdefer-type-errors'
 
 Credits
 -------
