@@ -61,7 +61,7 @@ function! hdevtools#info(identifier)
     endif
 
     " Get the identifier under the cursor
-    let l:identifier = s:extract_identifier(getline("."), col("."))
+    let l:identifier = hdevtools#extract_identifier(getline("."), col("."))
   endif
 
   if l:identifier ==# ''
@@ -120,7 +120,42 @@ function! hdevtools#info(identifier)
   highlight link HdevtoolsInfoLink Underlined
 endfunction
 
-function! s:extract_identifier(line_text, col)
+function! hdevtools#findsymbol(identifier, srcFiles)
+  let l:identifier = a:identifier
+
+  " No identifier argument given, probably called from a keyboard shortcut
+  if l:identifier ==# ''
+    " Get the identifier under the cursor
+    let l:identifier = hdevtools#extract_identifier(getline("."), col("."))
+  endif
+
+  if l:identifier ==# ''
+    echo '-- No Identifier Under Cursor'
+    return []
+  endif
+
+  let l:srcParam = ''
+  for l:srcFile in a:srcFiles
+     let l:srcParam .= ' ' . shellescape(l:srcFile)
+  endfor
+
+  let l:cmd = hdevtools#build_command('findsymbol', shellescape(l:identifier) . ' ' . l:srcParam)
+  let l:output = system(l:cmd)
+  let l:lines = split(l:output, '\n')
+
+  " Check if the call to hdevtools info succeeded
+  if v:shell_error != 0
+    for l:line in l:lines
+      call hdevtools#print_error(l:line)
+    endfor
+  else
+    return l:lines
+  endif
+
+  return []
+endfunction
+
+function! hdevtools#extract_identifier(line_text, col)
   if a:col > len(a:line_text)
     return ''
   endif
@@ -238,7 +273,7 @@ function! hdevtools#test_extract_identifier()
     let l:start_index = match(l:test, '#') + 1
     let l:end_index = match(l:test, '\%>' . l:start_index . 'c#') - 1
     for l:i in range(l:start_index, l:end_index)
-      let l:result = s:extract_identifier(l:input, l:i)
+      let l:result = hdevtools#extract_identifier(l:input, l:i)
       if l:expected !=# l:result
         call hdevtools#print_error("TEST FAILED expected: (" . l:expected . ") got: (" . l:result . ") for column " . l:i . " of: " . l:input)
       endif
