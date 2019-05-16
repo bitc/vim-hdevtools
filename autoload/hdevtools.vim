@@ -564,6 +564,89 @@ function! hdevtools#type_clear()
   endif
 endfunction
 
+function! hdevtools#insert_type()
+  let l:file = expand('%')
+  if l:file ==# ''
+    call hdevtools#print_warning( "hdevtool#insert_type: current version of "
+                              \ . "hdevtools.vim doesn't support running on "
+                              \ . "an unnamed buffer."
+                              \ )
+    return
+  endif
+
+  if &l:modified
+    call hdevtools#print_warning( 'hdevtools#insert_type: '
+                              \ . 'The buffer has been modified but not written.'
+                              \ )
+  endif
+
+  let l:line = line('.')
+  let l:col = col('.')
+  let l:get_pos_of_identifier = hdevtools#build_command_bare
+        \ ( 'type'
+        \ , shellescape(l:file) . ' ' . l:line . ' ' . l:col
+        \ )
+  let l:pos_raw = system(l:get_pos_of_identifier)
+  let l:pos_lines = split(l:pos_raw, '\n')
+
+  if v:shell_error != 0
+    call hdevtools#print_error( 'hdevtools#insert_type: No Type Information. '
+                            \ . 'hdevtools answered:'
+                            \ )
+    for l:line in pos_lines
+      call hdevtools#print_error(l:line)
+    endfor
+    return
+  endif
+
+  if len(l:pos_lines) == 0
+    call hdevtools#print_error('hdevtools#insert_type: No Type Information.')
+    return
+  endif
+  let l:pos_line = l:pos_lines[-1]
+  let l:pos_parsed = matchlist(l:pos_line, '\(\d\+\) \(\d\+\) \(\d\+\) \(\d\+\) "\([^"]\+\)"')
+  if len(l:pos_parsed) == 0
+    call hdevtools#print_error( 'hdevtools#insert_type: No Type Information.'
+                            \ . 'hdevtools answered:'
+                            \ )
+    for l:line in l:pos_lines
+      call hdevtools#print_error(l:line)
+    endfor
+    return
+  endif
+  let l:id_linenumber = l:pos_parsed[1]
+  let l:id_colmnumber = l:pos_parsed[2]
+  let l:id_line = getline(l:id_linenumber)
+  let l:identifier = s:extract_identifier(l:id_line, l:id_colmnumber)
+
+  if l:id_colmnumber != 1
+    call hdevtools#print_error( 'hdevtools#insert_type: `' . l:identifier
+                            \ . '` is not a top level variable identifier.'
+                            \ )
+    return
+  endif
+  let l:get_type_of_identifier = hdevtools#build_command_bare
+        \ ( 'info'
+        \ , shellescape(l:file) . ' ' . shellescape(l:identifier)
+        \ )
+  let l:output_for_type = system(l:get_type_of_identifier)
+
+  if v:shell_error != 0
+    call hdevtools#print_error( "hdevtools#insert_type: Couldn't get type for "
+                            \ . l:identifier . '. hdevtools answered:'
+                            \ )
+    for l:line in split(l:output_for_type, '\n')
+      call hdevtools#print_error(l:line)
+    endfor
+    return
+  endif
+
+  let l:type_lines = split(l:output_for_type, '\n')
+  let l:type_definition = l:type_lines[0]
+
+  execute(l:id_linenumber . "pu!='" . l:type_definition . "'")
+endfunction
+
 function! hdevtools#print_error(msg)
   echohl ErrorMsg
   echomsg a:msg
